@@ -127,7 +127,7 @@ fn main() {
 			game.render(&args);
 		}
 
-		if let Some(args) = e.update_args() {
+		if let Some(_args) = e.update_args() {
 			game.update();
 		}
 

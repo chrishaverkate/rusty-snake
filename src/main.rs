@@ -13,11 +13,10 @@ use rand::Rng;
 use std::collections::LinkedList;
 use std::iter::FromIterator;
 
-const BOARD_WIDTH: i32 = 40; // in number of cells
-const BOARD_HEIGHT: i32 = 40; // in number of cells
+const BOARD_WIDTH: i32 = 20; // in number of cells
+const BOARD_HEIGHT: i32 = 20; // in number of cells
 const CELL_SIZE: i32 = 20; // in pixels
-const FREQ_UPDATE: i32 = 20; // The number of loops that must pass before the game updates. Controls the "speed" of the game.
-const FRAMES_PER_SECOND: u64 = 30;
+const FRAMES_PER_SECOND: u64 = 8; // Effects the speed of the game
 
 const COLOR_BG: [f32; 4] = [0.0, 0.80, 0.40, 1.0];
 const COLOR_SNAKE: [f32; 4] = [0.9, 0.10, 0.10, 1.0];
@@ -175,25 +174,18 @@ fn main() {
 		},
 	};
 
-	let mut events = Events::new(EventSettings::new()); //.ups(FRAMES_PER_SECOND);
-	let update_freq = FREQ_UPDATE;
-	let mut loop_count = 0;
+	let mut events = Events::new(EventSettings::new()).ups(FRAMES_PER_SECOND);
 
 	// when there is another event in the window...
 	while let Some(e) = events.next(&mut window) {
-		loop_count += 1;
-
 		// ... if that event is a "Render"...
 		if let Some(args) = e.render_args() {
 			// ... render the game
 			game.render(&args);
 		}
 
-		if loop_count == update_freq {
-			loop_count = 0;
-			if let Some(_args) = e.update_args() {
-				game.update();
-			}
+		if let Some(_args) = e.update_args() {
+			game.update();
 		}
 
 		if let Some(args) = e.button_args() {

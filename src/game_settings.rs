@@ -5,7 +5,8 @@ pub const METADATA_HEIGHT: i32 = 0;
 pub const FRAME_WIDTH: i32 = BOARD_WIDTH;
 pub const FRAME_HEIGHT: i32 = BOARD_HEIGHT + METADATA_HEIGHT;
 
-pub const CELL_SIZE: i32 = 20; // in pixels
+pub const CELL_SIZE: f64 = 20.0; // in pixels
+pub const FOOD_SIZE: f64 = CELL_SIZE / 2.0;
 pub const FRAMES_PER_SECOND: u64 = 8; // Effects the speed of the game
 
 pub const COLOR_BG: [f32; 4] = [0.0, 0.80, 0.40, 1.0];

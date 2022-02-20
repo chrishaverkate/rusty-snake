@@ -17,7 +17,6 @@ _or don't. Whatever._
 
 
 ## TODO
+- [ ] Learn to render text
 - [ ] "Press any key to start"
-- [ ] Detect end of game
-  - [ ] Show score
-  - [ ] Ask to play again 
+- [ ] Ask to play again 

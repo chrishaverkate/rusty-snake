@@ -38,9 +38,9 @@ impl Game {
 
 		let scoreboard = graphics::rectangle::rectangle_by_corners(
 			0.0,
-			(BOARD_HEIGHT * CELL_SIZE) as f64,
-			(FRAME_WIDTH * CELL_SIZE) as f64,
-			(FRAME_HEIGHT * CELL_SIZE) as f64,
+			(BOARD_HEIGHT as f64) * CELL_SIZE,
+			(FRAME_WIDTH as f64) * CELL_SIZE,
+			(FRAME_HEIGHT as f64) * CELL_SIZE,
 		);
 
 		self.gl.draw(arg.viewport(), |c, gl| {
@@ -58,23 +58,21 @@ impl Game {
 	}
 
 	fn pressed(&mut self, button: &Button) {
-		let last_direction = self.snake.dir.clone();
-
-		self.snake.dir = match button {
-			&Button::Keyboard(Key::Up) if last_direction != Direction::Down => Direction::Up,
-			&Button::Keyboard(Key::Down) if last_direction != Direction::Up => Direction::Down,
-			&Button::Keyboard(Key::Left) if last_direction != Direction::Right => Direction::Left,
-			&Button::Keyboard(Key::Right) if last_direction != Direction::Left => Direction::Right,
-			_ => last_direction,
-		}
+		self.snake.change_direction(&match button {
+			&Button::Keyboard(Key::Up) => Direction::Up,
+			&Button::Keyboard(Key::Down) => Direction::Down,
+			&Button::Keyboard(Key::Left) => Direction::Left,
+			&Button::Keyboard(Key::Right) => Direction::Right,
+			_ => self.snake.current_direction(),
+		});
 	}
 }
 
 fn main() {
 	let opengl = OpenGL::V3_2;
 
-	let width = FRAME_WIDTH * CELL_SIZE;
-	let height = FRAME_HEIGHT * CELL_SIZE;
+	let width = (FRAME_WIDTH as f64) * CELL_SIZE;
+	let height = (FRAME_HEIGHT as f64) * CELL_SIZE;
 
 	// Create an Glutin window.
 	let mut window: GlutinWindow = WindowSettings::new("RustySnake", [width as f64, height as f64])

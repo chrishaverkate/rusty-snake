@@ -17,12 +17,12 @@ pub struct Food {
 
 impl Food {
 	pub fn render(&self, gl: &mut GlGraphics, args: &RenderArgs) {
-		// use graphics;
+		let offset = (CELL_SIZE - FOOD_SIZE) / 2.0;
 
 		let square = graphics::rectangle::square(
-			(self.pos_x * CELL_SIZE) as f64,
-			(self.pos_y * CELL_SIZE) as f64,
-			20_f64,
+			(self.pos_x as f64) * CELL_SIZE + offset,
+			(self.pos_y as f64) * CELL_SIZE + offset,
+			FOOD_SIZE,
 		);
 
 		gl.draw(args.viewport(), |c, gl| {

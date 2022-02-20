@@ -26,7 +26,11 @@ impl Snake {
 			.body
 			.iter()
 			.map(|&(x, y)| {
-				graphics::rectangle::square((x * CELL_SIZE) as f64, (y * CELL_SIZE) as f64, 20_f64)
+				graphics::rectangle::square(
+					(x as f64) * CELL_SIZE,
+					(y as f64) * CELL_SIZE,
+					CELL_SIZE,
+				)
 			})
 			.collect();
 
@@ -36,6 +40,22 @@ impl Snake {
 				.into_iter()
 				.for_each(|square| graphics::rectangle(COLOR_SNAKE, square, transform, gl));
 		});
+	}
+
+	pub fn current_direction(&self) -> Direction {
+		return self.dir.clone();
+	}
+
+	pub fn change_direction(&mut self, new_direction: &Direction) {
+		let last_direction = self.dir.clone();
+
+		self.dir = match new_direction {
+			Direction::Up if last_direction != Direction::Down => Direction::Up,
+			Direction::Down if last_direction != Direction::Up => Direction::Down,
+			Direction::Left if last_direction != Direction::Right => Direction::Left,
+			Direction::Right if last_direction != Direction::Left => Direction::Right,
+			_ => last_direction,
+		};
 	}
 
 	pub fn update(&mut self, food: &mut Food) {
@@ -63,6 +83,17 @@ impl Snake {
 		let head = *self.body.front().expect("Snake has no body");
 		let out_of_bounds_side = head.0 < 0 || BOARD_WIDTH <= head.0;
 		let out_of_bounds_top_or_bottom = head.1 < 0 || BOARD_HEIGHT <= head.1;
-		return !out_of_bounds_side && !out_of_bounds_top_or_bottom;
+
+		return !out_of_bounds_side && !out_of_bounds_top_or_bottom && !self.collided_with_self();
+	}
+
+	fn collided_with_self(&self) -> bool {
+		for position in self.body.iter().skip(1) {
+			if position == self.body.front().expect("snake has no body") {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

@@ -9,6 +9,7 @@ use piston::event_loop::*;
 use piston::input::*;
 use piston::window::WindowSettings;
 
+use rand::Rng;
 use std::collections::LinkedList;
 use std::iter::FromIterator;
 
@@ -24,6 +25,7 @@ enum Direction {
 struct Game {
 	gl: GlGraphics, // The graphic window
 	snake: Snake,
+	food: Food,
 }
 
 //Implementation related to Game struct
@@ -39,10 +41,12 @@ impl Game {
 		});
 
 		self.snake.render(&mut self.gl, arg);
+		self.food.render(&mut self.gl, arg);
 	}
 
 	fn update(&mut self) {
-		self.snake.update();
+		self.snake.update(&mut self.food);
+		self.food.update();
 	}
 
 	fn pressed(&mut self, button: &Button) {
@@ -83,7 +87,7 @@ impl Snake {
 		});
 	}
 
-	fn update(&mut self) {
+	fn update(&mut self, food: &mut Food) {
 		let mut new_head = (*self.body.front().expect("Snake has no body")).clone();
 
 		match self.dir {
@@ -94,7 +98,44 @@ impl Snake {
 		}
 
 		self.body.push_front(new_head);
-		self.body.pop_back().unwrap();
+
+		// If the snake head touches the the food, grow by not removing the tail
+		if food.pos_x == new_head.0 && food.pos_y == new_head.1 {
+			food.eaten = true;
+			println!("Ate food!");
+		} else {
+			self.body.pop_back().unwrap();
+		}
+	}
+}
+
+struct Food {
+	pos_x: i32,
+	pos_y: i32,
+	eaten: bool,
+}
+
+impl Food {
+	fn render(&self, gl: &mut GlGraphics, args: &RenderArgs) {
+		// use graphics;
+
+		let brown: [f32; 4] = [0.5, 0.0125, 0.0, 1.0];
+		let square =
+			graphics::rectangle::square((self.pos_x * 20) as f64, (self.pos_y * 20) as f64, 20_f64);
+
+		gl.draw(args.viewport(), |c, gl| {
+			let transform = c.transform;
+			graphics::rectangle(brown, square, transform, gl)
+		});
+	}
+
+	fn update(&mut self) {
+		if self.eaten {
+			self.eaten = false;
+			self.pos_x = rand::thread_rng().gen_range(0..10);
+			self.pos_y = rand::thread_rng().gen_range(0..10);
+			println!("Place new food {}, {}", self.pos_x, self.pos_y);
+		}
 	}
 }
 
@@ -114,6 +155,11 @@ fn main() {
 		snake: Snake {
 			body: LinkedList::from_iter((vec![(0, 0), (0, 1)]).into_iter()),
 			dir: Direction::Right,
+		},
+		food: Food {
+			pos_x: 4,
+			pos_y: 4,
+			eaten: false,
 		},
 	};
 

@@ -15,6 +15,10 @@ cargo run --release
 
 _or don't. Whatever._
 
+## Resources
+* [Spinning Square Tutorial](https://github.com/PistonDevelopers/Piston-Tutorials/tree/master/getting-started)
+* Text drawing library [gfx_text](https://github.com/PistonDevelopers/gfx_text)
+* Another implementation of snake game: [rsnake](https://github.com/laszukdawid/rsnake/blob/master/src/snake.rs)
 
 ## TODO
 - [ ] Learn to render text
